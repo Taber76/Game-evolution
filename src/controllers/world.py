@@ -105,4 +105,17 @@ class World:
     self.draw_matrix(matrix, screen)
     
     return matrix
+  
+  def growth(self, matrix):
+    for i in range(len(matrix)):
+      for j in range(len(matrix[i])):
+        if matrix[i][j][0] != 'sea':
+          matrix[i][j][1] += .01
+          if matrix[i][j][1] > const.grass_food / 2 and matrix[i][j][0] == 'terrain':
+            matrix[i][j][0] = 'grass'
+          if matrix[i][j][1] > const.forest_food / 2 and matrix[i][j][0] == 'grass':
+            matrix[i][j][0] = 'forest'
+    return matrix
+    
+    pass
 

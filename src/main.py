@@ -21,6 +21,7 @@ clock = pygame.time.Clock()
 world_matrix = None
 people = pygame.sprite.Group()
 world = World(const.width, const.height)
+generation = 0
 
 
 while run:
@@ -45,13 +46,15 @@ while run:
  
     if const.year > 0 and const.year % const.agents_reproduction_years == 0:
       people = reproduction(people)
+      generation += 1
  
   
     #update screen
+    world_matrix = world.growth(world_matrix)
     world.draw_matrix(world_matrix, screen)
     people.draw(screen)
     pygame.display.update(pygame.Rect(0, 40, const.width, const.height))
-    screen_menu.update_year_population(screen, const.year, len(people))
+    screen_menu.update_year_population(screen, const.year, len(people), generation)
     pygame.time.wait(const.speed)
 
   except Exception as e:

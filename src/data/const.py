@@ -29,17 +29,17 @@ forest_grow = 3
 snow_grow = 5
 
 #TERRAIN FOOD
-grass_food = 5
-forest_food = 10
+grass_food = 50
+forest_food = 100
 snow_food = 1
 
-
 #AGENTS
-agents_count = 1000
-agents_food = 29
+agents_count = 500
+agents_food = 10
 agents_live = 100
-agents_reproduction_years = 30
-agents_mutation_rate = 0.01
+agents_reproduction_years = 25
+agents_mutation_rate = 0.05
+agents_top_reproduction = 20
 
 #WORLD
 speed = 10

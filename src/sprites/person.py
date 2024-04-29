@@ -58,6 +58,8 @@ class Person(pygame.sprite.Sprite):
       self.col = col
       self.food = const.agents_food
       self.live = const.agents_live
+      self.score = 0
+      self.previous_move = 4 # no move
       if brain is None:
         self.brain = NeuralNetwork(9, 2, [5, 5], 1)
       else:
@@ -87,7 +89,7 @@ class Person(pygame.sprite.Sprite):
           ele = 0
           for i in range(-1, 2):
             for j in range(-1, 2):
-              if self.row + i < 0 or self.row + i >= len(world_matrix) or self.col + j < 0 or self.col + j >= len(world_matrix[0]):
+              if self.row + i < 0 or self.row + i >= len(world_matrix) or self.col + j < 0 or self.col + j >= len(world_matrix[0]): # out of bounds
                 terrain_vector[ele] = -1
               elif world_matrix[self.row + i][self.col + j][0] == 'sea':
                 terrain_vector[ele] = -1
@@ -100,22 +102,35 @@ class Person(pygame.sprite.Sprite):
 
         # Brain response
         next_move = self.brain.forward(terrain_vector)
+
+        # Move despite having food in its place
+        if world_matrix[self.row][self.col][1] > 0:
+          self.score -= 5
+
+        # Move to place without food
+        if terrain_vector[next_move] == 0: 
+           self.score -= 5
+
+        # Move to sea
         if terrain_vector[next_move] == -1:
-           self.kill()
-           return world_matrix  
+           row = 1
+           col = 1 
+           self.score -= 20
         else:
            row = next_move // 3
            col = next_move % 3
 
-           self.row += row - 1
-           self.col += col - 1
-           self.rect.x = int(self.col * const.box_size)
-           self.rect.y = int(self.row * const.box_size)
+        self.row += row - 1
+        self.col += col - 1
+        self.rect.x = int(self.col * const.box_size)
+        self.rect.y = int(self.row * const.box_size)
+        self.score += terrain_vector[next_move]
 
         # Update food
         if world_matrix[self.row][self.col][1] > 0:
           world_matrix[self.row][self.col][1] -= 1
-          self.food += 1
+          self.food += 2
+          self.score += 5
           if world_matrix[self.row][self.col][1] == 0 and (world_matrix[self.row][self.col][0] == 'forest' or world_matrix[self.row][self.col][0] == 'grass'):
             world_matrix[self.row][self.col][0] = 'terrain'
 

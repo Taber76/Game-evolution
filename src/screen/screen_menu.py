@@ -102,10 +102,12 @@ def map_menu(screen):
     pygame.display.update()
 
 
-def update_year_population(screen, year, population):
+def update_year_population(screen, year, population, generation):
     font = pygame.font.Font(None, 36)
     text_year = font.render("Year: " + str(year), True, const.white)
     text_population = font.render("Population: " + str(population), True, const.white)
+    text_generation = font.render("Generation: " + str(generation), True, const.white)
     screen.blit(text_year, (1000, 5))
-    screen.blit(text_population, (1400, 5))
+    screen.blit(text_population, (1200, 5))
+    screen.blit(text_generation, (1500, 5))
     pygame.display.update(pygame.Rect(1000, 5, const.width, 40))
