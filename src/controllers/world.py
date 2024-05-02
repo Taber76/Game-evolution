@@ -108,14 +108,39 @@ class World:
   
   def growth(self, matrix):
     for i in range(len(matrix)):
-      for j in range(len(matrix[i])):
+       for j in range(len(matrix[i])):
         if matrix[i][j][0] != 'sea':
-          matrix[i][j][1] += .01
-          if matrix[i][j][1] > const.grass_food / 2 and matrix[i][j][0] == 'terrain':
+          matrix[i][j][1] += const.growth_speed
+          if matrix[i][j][1] < const.grass_food:
+            matrix[i][j][0] = 'terrain'
+          elif matrix[i][j][1] < const.forest_food:
             matrix[i][j][0] = 'grass'
-          if matrix[i][j][1] > const.forest_food / 2 and matrix[i][j][0] == 'grass':
+          elif matrix[i][j][1] > const.forest_food:
             matrix[i][j][0] = 'forest'
+            if matrix[i][j][1] > const.max_food:
+              matrix[i][j][1] = const.max_food
     return matrix
     
-    pass
+  def zoom(self, matrix, zoom_level, map_pos):
+    if zoom_level == 0:
+      return matrix
+
+    map_init_corner = ( min((len(matrix) - 2 * zoom_level - 1) ,max(0, int(map_pos[0] - len(matrix)/(4*zoom_level)))), min((len(matrix[0]) - 2 * zoom_level - 1), max(0, int(map_pos[1] - len(matrix[0])/(4*zoom_level)))) )
+
+    rows, cols = len(matrix), len(matrix[0])
+    new_matrix = [[None] * cols for _ in range(rows)]
+
+    print('map_init_corner: ', map_init_corner)
+    print('matrix dimensions: ', rows, cols)
+    
+    for i in range(int(rows / (2 * zoom_level))):
+        for j in range(int(cols / (2 * zoom_level))):
+            for k in range(2 * zoom_level):
+                for l in range(2 * zoom_level):
+                    print('row: ', map_init_corner[0] + i * 2 * zoom_level + k)
+                    print('col: ', map_init_corner[1] + j * 2 * zoom_level + l)
+                    new_matrix[map_init_corner[0] + i * 2 * zoom_level + k][map_init_corner[1] + j * 2 * zoom_level + l] = matrix[map_init_corner[0] + i][map_init_corner[1] + j]
+
+    return new_matrix   
+
 
